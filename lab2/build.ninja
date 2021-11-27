@@ -1,0 +1,24 @@
+SOURCE_DIR=src
+INCLUDE_DIR=include
+OBJECT_DIR=ninja_output
+BUILD_DIR=ninja_output
+
+LIB_NAME=libcalculator.so
+EXECUTABLE_NAME=main.exe
+
+rule compile
+  command = g++ -c $in -I${INCLUDE_DIR} -o $out
+  description = Create object file - $out
+
+rule archive
+  command = g++ -shared $in -o $out
+  description = Create shared object file - $out
+
+rule link
+  command = g++ $in -o $out
+  description = Linking objects to - $out
+
+build ${OBJECT_DIR}/main.o: compile ${SOURCE_DIR}/main.cpp
+build ${OBJECT_DIR}/calculator.o: compile ${SOURCE_DIR}/calculator.cpp
+build ${BUILD_DIR}/${LIB_NAME}: archive ${OBJECT_DIR}/calculator.o
+build ${BUILD_DIR}/${EXECUTABLE_NAME}: link ${OBJECT_DIR}/main.o ${BUILD_DIR}/${LIB_NAME}
